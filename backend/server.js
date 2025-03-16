@@ -8,11 +8,10 @@ const couponRoutes = require("./routes/couponRoutes");
 const app = express();
 
 const allowedOrigins = [
-  "http://localhost:5173",  // Local Development
-  process.env.FrontendURL  // Actual frontend URL
+  "http://localhost:5173", 
+  process.env.FrontendURL 
 ];
 
-// app.use(cors({ origin: "http://localhost:5173", credentials: true })); // set the origin to https://localhost:5173(frontend) such that the request can be made only from the frontend.
 app.use(cors({
   origin: allowedOrigins,
   credentials: true
