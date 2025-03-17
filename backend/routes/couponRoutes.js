@@ -36,7 +36,7 @@ router.get("/claim", async (req, res) => {
   await coupon.save();
 
   // Record the claim
-  await Claim.create({ ip: userIP, cookieId: userCookie });
+  await Claim.create({ ip: hashedIP, cookieId: userCookie });
 
   res.json({ message: "Coupon claimed successfully!", couponCode: coupon.code });
 
