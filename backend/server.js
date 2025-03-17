@@ -9,7 +9,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173", 
-  process.env.FrontendURL 
+  "https://rr-coupons-distribution-frontend-fz2xg0keg.vercel.app"
 ];
 
 app.use(cors({
