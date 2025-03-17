@@ -7,16 +7,12 @@ const couponRoutes = require("./routes/couponRoutes");
 
 const app = express();
 
-// const allowedOrigins = [
-//   "http://localhost:5173", 
-//   process.env.FrontendURL
-// ];
+const corsOptions = {
+  origin: "https://rr-coupons-distribution-frontend.vercel.app",
+  credentials: true,
+};
 
-// app.use(cors({
-//   origin: allowedOrigins,
-//   credentials: true
-// }));
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(cookieParser());
