@@ -11,7 +11,7 @@ const corsOptions = {
   origin: "https://rr-coupons-distribution-frontend.vercel.app",
   credentials: true,
 };
-
+app.set("trust proxy", 1);
 app.use(cors(corsOptions));
 
 app.use(express.json());
