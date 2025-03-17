@@ -19,7 +19,7 @@ router.get("/claim", async (req, res) => {
 
   // Check previous claims
   const lastClaim = await Claim.findOne({
-    $or: [{ ip: userIP }, { cookieId: userCookie }],
+    $or: [{ ip: hashedIP }, { cookieId: userCookie }],
   }).sort({ timestamp: -1 });
 
   if (lastClaim && new Date() - lastClaim.timestamp < RATE_LIMIT_TIME) {
@@ -36,7 +36,7 @@ router.get("/claim", async (req, res) => {
   await coupon.save();
 
   // Record the claim
-  await Claim.create({ ip: userIP, cookieId: userCookie });
+  await Claim.create({ ip: hashedIP, cookieId: userCookie });
 
   res.json({ message: "Coupon claimed successfully!", couponCode: coupon.code });
 });
