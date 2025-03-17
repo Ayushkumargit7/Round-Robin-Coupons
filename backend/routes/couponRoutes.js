@@ -27,18 +27,26 @@ router.get("/claim", async (req, res) => {
     return res.status(429).json({ message: `Please wait ${remainingTime} seconds before claiming another coupon.` });
   }
 
-  // Find an unclaimed coupon
-  const coupon = await Coupon.findOne({ claimed: false }).sort({ _id: 1 });
-  if (!coupon) return res.status(404).json({ message: "No coupons available." });
+  // Get all available coupons
+const allCoupons = await Coupon.find().sort({ _id: 1 });
+if (!allCoupons.length) return res.status(404).json({ message: "No coupons available." });
 
-  // Mark coupon as claimed
-  coupon.claimed = true;
-  await coupon.save();
+// Get all coupons claimed by this user
+const userClaims = await Claim.find({ ip: hashedIP }).select("couponId");
+const userClaimedCoupons = new Set(userClaims.map(c => c.couponId.toString()));
 
-  // Record the claim
-  await Claim.create({ ip: hashedIP, cookieId: userCookie });
+// Find the next available coupon the user hasn't claimed yet
+let coupon = allCoupons.find(c => !userClaimedCoupons.has(c._id.toString()));
 
-  res.json({ message: "Coupon claimed successfully!", couponCode: coupon.code });
+if (!coupon) {
+  return res.status(429).json({ message: "You have claimed all available coupons!" });
+}
+
+// Mark coupon as claimed
+await Claim.create({ ip: hashedIP, cookieId: userCookie, couponId: coupon._id });
+
+res.json({ message: "Coupon claimed successfully!", couponCode: coupon.code });
+
 });
 
 module.exports = router;
