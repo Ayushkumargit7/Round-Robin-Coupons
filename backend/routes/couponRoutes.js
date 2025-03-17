@@ -7,6 +7,9 @@ const crypto = require("crypto");
 const RATE_LIMIT_TIME = 60 * 60 * 1000; // 1 hour in milliseconds
 // const RATE_LIMIT_TIME =  6 * 1000; // 6 seconds in milliseconds. 6 seconds = 6000ms .
 
+// Function to hash IP addresses
+const hashIP = (ip) => crypto.createHash("sha256").update(ip).digest("hex");
+
 router.get("/claim", async (req, res) => {
   const realIP = req.headers["x-forwarded-for"]?.split(",")[0] || req.connection.remoteAddress;
   const hashedIP = hashIP(realIP); // Hash the IP before storing
