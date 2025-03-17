@@ -2,15 +2,16 @@ const express = require("express");
 const router = express.Router();
 const Coupon = require("../models/Coupon");
 const Claim = require("../models/Claim");
+const crypto = require("crypto");
 
 const RATE_LIMIT_TIME = 60 * 60 * 1000; // 1 hour in milliseconds
 // const RATE_LIMIT_TIME =  6 * 1000; // 6 seconds in milliseconds. 6 seconds = 6000ms .
 
 router.get("/claim", async (req, res) => {
-  const userIP = req.headers["x-forwarded-for"]?.split(",")[0] || req.connection.remoteAddress;
-  const userCookie = req.cookies.user_cookie || Math.random().toString(36).substring(2);
+  const realIP = req.headers["x-forwarded-for"]?.split(",")[0] || req.connection.remoteAddress;
+  const hashedIP = hashIP(realIP); // Hash the IP before storing
 
-  // Set Cookie if not present
+  const userCookie = req.cookies.user_cookie || Math.random().toString(36).substring(2);
   res.cookie("user_cookie", userCookie, { maxAge: RATE_LIMIT_TIME, httpOnly: true });
 
   // Check previous claims
